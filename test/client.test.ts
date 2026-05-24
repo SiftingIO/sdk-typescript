@@ -27,14 +27,14 @@ function jsonFetch(
 
 describe("request building", () => {
   it("hits the right URL, sends the API key and gzip header", async () => {
-    const { fetch, calls } = jsonFetch(200, { s: "BTCUSDT", p: "1", P: "1", t: 1 });
+    const { fetch, calls } = jsonFetch(200, { s: "BTCUSD", p: "1", P: "1", t: 1 });
     const client = new SiftingClient({ apiKey: "sft_test", fetch });
 
-    const trade = await client.last.trade("crypto", "BTCUSDT");
+    const trade = await client.last.trade("crypto", "BTCUSD");
 
-    expect(trade.s).toBe("BTCUSDT");
+    expect(trade.s).toBe("BTCUSD");
     expect(calls).toHaveLength(1);
-    expect(calls[0]!.url).toBe("https://api.sifting.io/v1/last/trade/crypto/BTCUSDT");
+    expect(calls[0]!.url).toBe("https://api.sifting.io/v1/last/trade/crypto/BTCUSD");
     const headers = calls[0]!.init!.headers as Record<string, string>;
     expect(headers["X-API-Key"]).toBe("sft_test");
     expect(headers["Accept-Encoding"]).toBe("gzip");
@@ -55,10 +55,10 @@ describe("request building", () => {
     const { fetch, calls } = jsonFetch(200, { s: "X", p: "1", P: "1", t: 1 });
     const client = new SiftingClient({ baseUrl: "https://my-proxy.example.com", fetch });
 
-    await client.last.trade("crypto", "ETHUSDT");
+    await client.last.trade("crypto", "ETHUSD");
 
     expect(calls[0]!.url).toBe(
-      "https://my-proxy.example.com/v1/last/trade/crypto/ETHUSDT",
+      "https://my-proxy.example.com/v1/last/trade/crypto/ETHUSD",
     );
     // No key configured → no X-API-Key header (the proxy injects it).
     const headers = calls[0]!.init!.headers as Record<string, string>;
@@ -70,7 +70,7 @@ describe("request building", () => {
     const getApiKey = vi.fn(async () => "sft_dynamic");
     const client = new SiftingClient({ getApiKey, fetch });
 
-    await client.last.quote("crypto", "BTCUSDT");
+    await client.last.quote("crypto", "BTCUSD");
 
     expect(getApiKey).toHaveBeenCalledOnce();
     const headers = calls[0]!.init!.headers as Record<string, string>;
@@ -104,7 +104,7 @@ describe("error handling", () => {
     );
     const client = new SiftingClient({ apiKey: "k", fetch, maxRetries: 0 });
 
-    const err = (await client.last.trade("crypto", "BTCUSDT").catch((e) => e)) as SiftingApiError;
+    const err = (await client.last.trade("crypto", "BTCUSD").catch((e) => e)) as SiftingApiError;
     expect(err.code).toBe("rate_limit_exceeded");
     expect(err.retryAfter).toBe(12);
   });
@@ -115,7 +115,7 @@ describe("error handling", () => {
     };
     const client = new SiftingClient({ apiKey: "k", fetch, maxRetries: 0 });
 
-    const err = await client.last.trade("crypto", "BTCUSDT").catch((e) => e);
+    const err = await client.last.trade("crypto", "BTCUSD").catch((e) => e);
     expect(err).toBeInstanceOf(SiftingConnectionError);
   });
 });
@@ -131,14 +131,14 @@ describe("retries", () => {
           headers: { "Retry-After": "0" },
         });
       }
-      return new Response(JSON.stringify({ s: "BTCUSDT", p: "1", P: "1", t: 1 }), {
+      return new Response(JSON.stringify({ s: "BTCUSD", p: "1", P: "1", t: 1 }), {
         status: 200,
       });
     };
     const client = new SiftingClient({ apiKey: "k", fetch, maxRetries: 2 });
 
-    const trade = await client.last.trade("crypto", "BTCUSDT");
-    expect(trade.s).toBe("BTCUSDT");
+    const trade = await client.last.trade("crypto", "BTCUSD");
+    expect(trade.s).toBe("BTCUSD");
     expect(n).toBe(2);
   });
 });

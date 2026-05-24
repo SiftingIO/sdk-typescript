@@ -20,7 +20,7 @@ async function main() {
   socket.on("tvl", (v) => console.log(`[tvl] ${v.s} $${v.usd}`));
 
   await socket.connect();
-  socket.subscribe("cex", ["BTCUSDT", "ETHUSDT"]);
+  socket.subscribe("cex", ["BTCUSD", "ETHUSD"]);
   socket.subscribe("tvl", ["eth:WETH-USDC"]);
 
   // Stream for 30s, then close cleanly.

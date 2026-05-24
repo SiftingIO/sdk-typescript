@@ -43,7 +43,7 @@ type Listener<T> = (payload: T) => void;
  * const socket = client.ws();
  * socket.on("tick", (t) => console.log(t.s, t.p));
  * await socket.connect();
- * socket.subscribe("cex", ["BTCUSDT", "ETHUSDT"]);
+ * socket.subscribe("cex", ["BTCUSD", "ETHUSD"]);
  * ```
  */
 export class SiftingSocket {

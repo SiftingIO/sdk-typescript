@@ -7,7 +7,7 @@ const sifting = new SiftingClient({ apiKey: process.env.SIFTING_API_KEY });
 
 async function main() {
   // 1. Live snapshots
-  const trade = await sifting.last.trade("crypto", "BTCUSDT");
+  const trade = await sifting.last.trade("crypto", "BTCUSD");
   console.log("BTC last trade:", trade.p, "@", new Date(trade.t).toISOString());
 
   // 2. Fundamentals

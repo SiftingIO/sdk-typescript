@@ -17,7 +17,7 @@ import { SiftingSocket, type SiftingSocketOptions } from "./ws/client.js";
  *
  * const sifting = new SiftingClient({ apiKey: process.env.SIFTING_API_KEY });
  *
- * const trade = await sifting.last.trade("crypto", "BTCUSDT");
+ * const trade = await sifting.last.trade("crypto", "BTCUSD");
  * const profile = await sifting.stocks.profile("AAPL");
  * ```
  *

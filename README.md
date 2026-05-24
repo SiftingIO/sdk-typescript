@@ -28,7 +28,7 @@ import { SiftingClient } from "@siftingio/sdk";
 const sifting = new SiftingClient({ apiKey: process.env.SIFTING_API_KEY });
 
 // Live price
-const trade = await sifting.last.trade("crypto", "BTCUSDT");
+const trade = await sifting.last.trade("crypto", "BTCUSD");
 console.log(trade.p, trade.t);
 
 // Company fundamentals
@@ -125,11 +125,11 @@ socket.on("error", (e) => console.error("server error:", e.code, e.message));
 socket.on("reconnect", ({ attempt }) => console.log("reconnecting", attempt));
 
 await socket.connect();
-socket.subscribe("cex", ["BTCUSDT", "ETHUSDT"]); // products: cex | dex | fx | us | tvl
+socket.subscribe("cex", ["BTCUSD", "ETHUSD"]); // products: cex | dex | fx | us | tvl
 socket.subscribe("tvl", ["eth:WETH-USDC"]);
 
 // later…
-socket.unsubscribe("cex", ["ETHUSDT"]);
+socket.unsubscribe("cex", ["ETHUSD"]);
 socket.close();
 ```
 

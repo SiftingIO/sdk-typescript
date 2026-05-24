@@ -5,7 +5,7 @@
  * ```ts
  * import { SiftingClient } from "@siftingio/sdk";
  * const sifting = new SiftingClient({ apiKey: process.env.SIFTING_API_KEY });
- * const quote = await sifting.last.quote("crypto", "BTCUSDT");
+ * const quote = await sifting.last.quote("crypto", "BTCUSD");
  * ```
  */
 
