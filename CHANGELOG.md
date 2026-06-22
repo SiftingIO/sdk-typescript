@@ -3,7 +3,20 @@
 All notable changes to `@siftingio/sdk` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com); the project adheres to SemVer.
 
-## [0.1.0] — Unreleased
+## [0.2.0] — 2026-06-22
+
+### Added
+- `commodities` resource: `commodities.bars` for historical OHLC bars on
+  commodities/metals, supporting the `1d` interval.
+- `order` param (`asc`/`desc`) on `forex.bars` and `commodities.bars` to control
+  bar sort direction.
+
+## [0.1.1] — 2026-05-24
+
+### Changed
+- Ticker name updates.
+
+## [0.1.0] — 2026-05-24
 
 Initial release.
 

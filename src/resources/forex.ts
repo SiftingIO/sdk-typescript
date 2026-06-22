@@ -1,3 +1,4 @@
+import type { BarOrder } from "../types.js";
 import type { HttpClient } from "../http.js";
 import type { BarsResponse, StockBarsParams } from "./stocks.js";
 
@@ -6,6 +7,8 @@ export interface ForexBarsParams extends Omit<StockBarsParams, "cursor"> {
   start: string;
   /** Opaque pagination cursor. */
   cursor?: string;
+  /** Sort direction. `asc` (default) oldest→newest; `desc` newest first. */
+  order?: BarOrder;
 }
 
 /**

@@ -41,6 +41,16 @@ export type Chain = "eth" | "base" | "arbitrum" | "bsc" | "polygon";
 /** OHLCV bar intervals for `/v1/hist/*` endpoints. */
 export type BarInterval = "1m" | "5m" | "15m" | "30m" | "1h";
 
+/** Bar intervals for commodities, which additionally support daily candles. */
+export type CommodityBarInterval = BarInterval | "1d";
+
+/**
+ * Time sort direction for OHLC bars. `asc` (default) is oldest→newest;
+ * `desc` is newest→oldest with the first page anchored at the latest bar.
+ * Honored on forex and commodities only.
+ */
+export type BarOrder = "asc" | "desc";
+
 /** Economic-event / market-impact level. */
 export type Impact = "low" | "medium" | "high";
 

@@ -1,4 +1,5 @@
 import { HttpClient, type SiftingClientOptions } from "./http.js";
+import { CommoditiesResource } from "./resources/commodities.js";
 import { CryptoResource } from "./resources/crypto.js";
 import { DexResource } from "./resources/dex.js";
 import { EconomicCalendarResource } from "./resources/economic-calendar.js";
@@ -37,6 +38,8 @@ export class SiftingClient {
   readonly markets: MarketsResource;
   /** Forex OHLC bars: `/v1/hist/forex/*`. */
   readonly forex: ForexResource;
+  /** Commodity OHLC bars: `/v1/hist/commodities/*`. */
+  readonly commodities: CommoditiesResource;
   /** Crypto OHLCV bars: `/v1/hist/crypto/*`. */
   readonly crypto: CryptoResource;
   /** On-chain wallet portfolios: `/v1/fnd/dex/*`. */
@@ -51,6 +54,7 @@ export class SiftingClient {
     this.filers = new FilersResource(this.http);
     this.markets = new MarketsResource(this.http);
     this.forex = new ForexResource(this.http);
+    this.commodities = new CommoditiesResource(this.http);
     this.crypto = new CryptoResource(this.http);
     this.dex = new DexResource(this.http);
     this.economicCalendar = new EconomicCalendarResource(this.http);

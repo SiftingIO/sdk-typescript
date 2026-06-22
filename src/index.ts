@@ -39,6 +39,8 @@ export type {
   Venue,
   Chain,
   BarInterval,
+  CommodityBarInterval,
+  BarOrder,
   Impact,
   Loose,
 } from "./types.js";
@@ -104,6 +106,9 @@ export type {
 
 export { ForexResource } from "./resources/forex.js";
 export type { ForexBarsParams } from "./resources/forex.js";
+
+export { CommoditiesResource } from "./resources/commodities.js";
+export type { CommodityBarsParams } from "./resources/commodities.js";
 
 export { CryptoResource } from "./resources/crypto.js";
 export type { CryptoBarsParams } from "./resources/crypto.js";
