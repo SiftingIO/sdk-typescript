@@ -2,7 +2,7 @@
 
 Official TypeScript SDK for the [SiftingIO Market Data API](https://sifting.io).
 
-SiftingIO provides real-time and historical market data APIs for stocks, FX, crypto, commodities, DEX, and on-chain markets through REST and WebSocket.
+SiftingIO provides real-time and historical market data APIs for stocks, FX, crypto, commodities, DEX datasets, fundamentals, market news, and market hours through REST and WebSocket.
 
 This SDK is built for JavaScript and TypeScript developers integrating market data into financial applications, trading tools, dashboards, research platforms, web apps, edge services, and enterprise data workflows.
 
@@ -19,9 +19,12 @@ This SDK is built for JavaScript and TypeScript developers integrating market da
 
 * [Website](https://sifting.io)
 * [API Documentation](https://sifting.io/docs)
-* [Postman Collection](https://www.postman.com/siftingio/siftingio-market-data-api)
+* [Symbol Catalog](https://sifting.io/symbols)
+* [Market Hours](https://sifting.io/market-hours)
+* [Integrations](https://sifting.io/integrations)
+* [Postman Collection](https://www.postman.com/siftingio)
 * [Pricing](https://sifting.io/pricing)
-* [System Status](https://siftingio.instatus.com/)
+* [System Status](https://siftingio.instatus.com)
 
 ## Install
 
@@ -46,6 +49,10 @@ npm install ws
 Browsers, Deno, and Bun use the built-in `WebSocket`.
 
 ## Quick start
+
+Before integrating, you can browse supported symbols and examples in the public symbol catalog:
+
+https://sifting.io/symbols
 
 ```ts
 import { SiftingClient } from "@siftingio/sdk";
