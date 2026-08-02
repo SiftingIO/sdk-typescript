@@ -35,14 +35,29 @@ export interface PageParams {
 /** Live-data venues for `/v1/last/trade` and `/v1/last/quote`. */
 export type Venue = "stocks" | "crypto" | "forex" | "dex";
 
+/** Venues with a previous-close product (`/v1/last/close`). No DEX; adds commodities. */
+export type PrevCloseVenue = "stocks" | "crypto" | "forex" | "commodities";
+
 /** EVM chains supported by DEX/TVL endpoints. */
 export type Chain = "eth" | "base" | "arbitrum" | "bsc" | "polygon";
 
-/** OHLCV bar intervals for `/v1/hist/*` endpoints. */
-export type BarInterval = "1m" | "5m" | "15m" | "30m" | "1h";
+/**
+ * OHLCV bar intervals for `/v1/hist/*` endpoints. Every route accepts the same
+ * set: intraday (1m–1h), `1d` (UTC day), `1w` (Monday-aligned), `1mo` (calendar
+ * month). Coarser bars are aggregated from 1-minute history.
+ */
+export type BarInterval =
+  | "1m"
+  | "5m"
+  | "15m"
+  | "30m"
+  | "1h"
+  | "1d"
+  | "1w"
+  | "1mo";
 
-/** Bar intervals for commodities, which additionally support daily candles. */
-export type CommodityBarInterval = BarInterval | "1d";
+/** @deprecated Every route now shares {@link BarInterval}; kept as an alias. */
+export type CommodityBarInterval = BarInterval;
 
 /**
  * Time sort direction for OHLC bars. `asc` (default) is oldest→newest;

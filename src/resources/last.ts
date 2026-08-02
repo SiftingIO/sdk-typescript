@@ -1,5 +1,5 @@
 import type { HttpClient } from "../http.js";
-import type { Chain, Loose, Venue } from "../types.js";
+import type { Chain, Loose, PrevCloseVenue, Venue } from "../types.js";
 
 /**
  * Latest trade snapshot. Prices/sizes are decimal strings (preserved exactly
@@ -27,6 +27,22 @@ export interface LastQuote {
   /** Ask size. */
   A: string;
   /** Timestamp, Unix epoch milliseconds. */
+  t: number;
+}
+
+/**
+ * Previous close for one instrument. `c` is a decimal string (preserved
+ * exactly); `d` is the UTC close date (`YYYY-MM-DD`); `t` is the close-boundary
+ * Unix epoch milliseconds. Immutable until the next close, so edge-cacheable.
+ */
+export interface LastClose {
+  /** Symbol, normalized to the venue's canonical form. */
+  s: string;
+  /** Close price. */
+  c: string;
+  /** UTC close date, `YYYY-MM-DD`. */
+  d: string;
+  /** Close-boundary timestamp, Unix epoch milliseconds. */
   t: number;
 }
 
@@ -68,6 +84,13 @@ export class LastResource {
   quote(venue: Loose<Venue>, symbol: string): Promise<LastQuote> {
     return this.http.get<LastQuote>(
       `/v1/last/quote/${enc(venue)}/${enc(symbol)}`,
+    );
+  }
+
+  /** Previous close for a symbol on a venue. `GET /v1/last/close/:venue/:symbol` (e.g. `close("stocks", "AAPL")`). DEX has no close. */
+  close(venue: Loose<PrevCloseVenue>, symbol: string): Promise<LastClose> {
+    return this.http.get<LastClose>(
+      `/v1/last/close/${enc(venue)}/${enc(symbol)}`,
     );
   }
 

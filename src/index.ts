@@ -37,6 +37,7 @@ export type {
   ListResponse,
   PageParams,
   Venue,
+  PrevCloseVenue,
   Chain,
   BarInterval,
   CommodityBarInterval,
@@ -47,7 +48,7 @@ export type {
 
 // Resource classes + their types
 export { LastResource } from "./resources/last.js";
-export type { LastTrade, LastQuote, LastTVL } from "./resources/last.js";
+export type { LastTrade, LastQuote, LastClose, LastTVL } from "./resources/last.js";
 
 export { StocksResource } from "./resources/stocks.js";
 export type {
