@@ -1,0 +1,235 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_SIFTINGIO",
+      "label": "SiftingIO (Infinity datasource)",
+      "type": "datasource",
+      "pluginId": "yesoreyeram-infinity-datasource",
+      "pluginName": "Infinity"
+    }
+  ],
+  "title": "SiftingIO historical Forex and commodity bars",
+  "uid": null,
+  "id": null,
+  "schemaVersion": 39,
+  "version": 1,
+  "tags": [
+    "forex",
+    "commodities",
+    "siftingio"
+  ],
+  "timezone": "utc",
+  "refresh": "",
+  "time": {
+    "from": "now-2d",
+    "to": "now"
+  },
+  "templating": {
+    "list": []
+  },
+  "panels": [
+    {
+      "id": 3,
+      "type": "text",
+      "title": "Read before using",
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "Historical Forex and commodity bars from [SiftingIO](https://sifting.io/docs). Configure X-API-Key in the Infinity datasource\u2019s secure HTTP header settings. Never add it to dashboard JSON or a URL. This dashboard makes two bounded, read-only requests per refresh; automatic refresh is off. Dates are UTC. Each table shows only the first 300 rows and can be incomplete; use the API\u2019s meta.next_cursor for further pages. Account allowances and data licensing apply. No market-data records are bundled."
+      }
+    },
+    {
+      "id": 1,
+      "type": "table",
+      "title": "EURUSD historical bars (first 300 rows)",
+      "description": "One page of hourly historical bars, not a live quote. A limit of 300 can truncate the period. Check meta.next_cursor through the API before treating this as a complete history.",
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "${DS_SIFTINGIO}"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "parser": "backend",
+          "format": "table",
+          "url": "https://api.sifting.io/v1/hist/forex/EURUSD/bars",
+          "url_options": {
+            "method": "GET",
+            "headers": [
+              {
+                "key": "Accept-Encoding",
+                "value": "gzip"
+              }
+            ],
+            "params": [
+              {
+                "key": "start",
+                "value": "${__from:date:iso}"
+              },
+              {
+                "key": "end",
+                "value": "${__to:date:iso}"
+              },
+              {
+                "key": "interval",
+                "value": "1h"
+              },
+              {
+                "key": "limit",
+                "value": "300"
+              }
+            ]
+          },
+          "root_selector": "data",
+          "columns": [
+            {
+              "selector": "t",
+              "text": "Time (UTC)",
+              "type": "timestamp_epoch"
+            },
+            {
+              "selector": "o",
+              "text": "Open",
+              "type": "number"
+            },
+            {
+              "selector": "h",
+              "text": "High",
+              "type": "number"
+            },
+            {
+              "selector": "l",
+              "text": "Low",
+              "type": "number"
+            },
+            {
+              "selector": "c",
+              "text": "Close",
+              "type": "number"
+            }
+          ],
+          "pagination_mode": "none",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "${DS_SIFTINGIO}"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true
+      }
+    },
+    {
+      "id": 2,
+      "type": "table",
+      "title": "XAUUSD historical bars (first 300 rows)",
+      "description": "One page of hourly historical bars, not a live quote. A limit of 300 can truncate the period. Check meta.next_cursor through the API before treating this as a complete history.",
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "${DS_SIFTINGIO}"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "parser": "backend",
+          "format": "table",
+          "url": "https://api.sifting.io/v1/hist/commodities/XAUUSD/bars",
+          "url_options": {
+            "method": "GET",
+            "headers": [
+              {
+                "key": "Accept-Encoding",
+                "value": "gzip"
+              }
+            ],
+            "params": [
+              {
+                "key": "start",
+                "value": "${__from:date:iso}"
+              },
+              {
+                "key": "end",
+                "value": "${__to:date:iso}"
+              },
+              {
+                "key": "interval",
+                "value": "1h"
+              },
+              {
+                "key": "limit",
+                "value": "300"
+              }
+            ]
+          },
+          "root_selector": "data",
+          "columns": [
+            {
+              "selector": "t",
+              "text": "Time (UTC)",
+              "type": "timestamp_epoch"
+            },
+            {
+              "selector": "o",
+              "text": "Open",
+              "type": "number"
+            },
+            {
+              "selector": "h",
+              "text": "High",
+              "type": "number"
+            },
+            {
+              "selector": "l",
+              "text": "Low",
+              "type": "number"
+            },
+            {
+              "selector": "c",
+              "text": "Close",
+              "type": "number"
+            }
+          ],
+          "pagination_mode": "none",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "${DS_SIFTINGIO}"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true
+      }
+    }
+  ],
+  "editable": true,
+  "description": "Two explicitly bounded historical tables with a separately configured secret; no live quotes, auto-refresh or included market data."
+}

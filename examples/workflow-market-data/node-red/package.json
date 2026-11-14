@@ -1,0 +1,28 @@
+{
+  "name": "node-red-contrib-siftingio",
+  "version": "0.1.0",
+  "description": "Read a bounded page of SiftingIO historical Forex or commodity bars.",
+  "main": "siftingio.cjs",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "node-red",
+    "forex",
+    "commodities",
+    "market-data"
+  ],
+  "node-red": {
+    "nodes": {
+      "siftingio": "siftingio.cjs"
+    }
+  },
+  "files": [
+    "siftingio.cjs",
+    "siftingio.html",
+    "core.mjs",
+    "README.md",
+    "LICENSE"
+  ]
+}

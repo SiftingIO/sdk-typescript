@@ -1,0 +1,15 @@
+{
+  "name": "siftingio-market-data-workflow-examples",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "pnpm build && python3 generate.py && node --test tests/*.test.mjs",
+    "generate": "python3 generate.py"
+  },
+  "devDependencies": {
+    "@activepieces/pieces-framework": "0.32.0",
+    "typescript": "5.9.3"
+  }
+}

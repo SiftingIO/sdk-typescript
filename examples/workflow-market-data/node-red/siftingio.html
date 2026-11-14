@@ -1,0 +1,20 @@
+<script type="text/javascript">
+RED.nodes.registerType('siftingio historical',{
+  category:'function',color:'#d8e2eb',defaults:{name:{value:''}},
+  credentials:{apiKey:{type:'password'}},inputs:1,outputs:2,icon:'font-awesome/fa-table',
+  label:function(){return this.name||'SiftingIO historical';},
+  outputLabels:['Historical page and next_cursor','CSV text']
+});
+</script>
+<script type="text/html" data-template-name="siftingio historical">
+  <div class="form-row"><label for="node-input-name">Name</label><input type="text" id="node-input-name"></div>
+  <div class="form-row"><label for="node-input-apiKey">API key</label><input type="password" id="node-input-apiKey" autocomplete="off"></div>
+  <p>Leave API key empty to use the runtime SIFTINGIO_API_KEY environment variable. Do not put a real key in flow JSON.</p>
+</script>
+<script type="text/html" data-help-name="siftingio historical">
+  <p>Reads one page of historical Forex or commodity bars from SiftingIO. Requires Node.js 20 or later.</p>
+  <p>Input <code>msg.payload</code>: asset_class (forex or commodities), symbol, start, end, interval (default 1h), limit (default 300; maximum 2000), optional cursor. Dates are UTC and inclusive.</p>
+  <p>Output 1 contains the validated page, row_count, next_cursor and has_more. Output 2 is CSV text. It does not write files, schedule requests, retry automatically or fetch all pages.</p>
+  <p>Bar timestamps are Unix milliseconds. Forex v is reported tick count, not exchange-traded volume. Missing v stays missing. These are historical bars, not live quotes. Your account allowance and data licence apply.</p>
+  <p><a href="https://sifting.io/docs">API documentation</a></p>
+</script>

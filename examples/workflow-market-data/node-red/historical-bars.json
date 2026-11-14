@@ -1,0 +1,90 @@
+[
+  {
+    "id": "siftingio-tab",
+    "type": "tab",
+    "label": "SiftingIO historical bars",
+    "disabled": false,
+    "info": "Manual, read-only page fetch. https://sifting.io/docs . Set SIFTINGIO_API_KEY in the runtime environment; do not paste a key into this flow. Dates below are examples, not market-data observations."
+  },
+  {
+    "id": "siftingio-notes",
+    "type": "comment",
+    "z": "siftingio-tab",
+    "name": "Own key in runtime environment; one page; manual execution only",
+    "info": "Edit symbol and UTC dates in Inject. Forex v means reported tick count. has_more and next_cursor describe remaining pages. No key should be wired to Debug.",
+    "x": 400,
+    "y": 60,
+    "wires": []
+  },
+  {
+    "id": "siftingio-inject",
+    "type": "inject",
+    "z": "siftingio-tab",
+    "name": "Choose dates and instrument",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "{\"asset_class\": \"forex\", \"symbol\": \"EURUSD\", \"start\": \"2026-11-01\", \"end\": \"2026-11-02\", \"interval\": \"1h\", \"limit\": 300}",
+    "payloadType": "json",
+    "x": 190,
+    "y": 140,
+    "wires": [
+      [
+        "siftingio-native"
+      ]
+    ]
+  },
+  {
+    "id": "siftingio-native",
+    "type": "siftingio historical",
+    "z": "siftingio-tab",
+    "name": "SiftingIO historical page",
+    "x": 480,
+    "y": 140,
+    "wires": [
+      [
+        "siftingio-json"
+      ],
+      [
+        "siftingio-csv"
+      ]
+    ]
+  },
+  {
+    "id": "siftingio-json",
+    "type": "debug",
+    "z": "siftingio-tab",
+    "name": "Page and next_cursor",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "x": 800,
+    "y": 220,
+    "wires": []
+  },
+  {
+    "id": "siftingio-csv",
+    "type": "debug",
+    "z": "siftingio-tab",
+    "name": "CSV text (not written to disk)",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "x": 810,
+    "y": 280,
+    "wires": []
+  }
+]
