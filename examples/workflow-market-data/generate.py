@@ -43,44 +43,18 @@ write('pipedream/historical-bars.mjs',core_js+'\nexport default defineComponent(
 });
 ''')
 
-# Flow uses only built-in Node-RED nodes. HTTP request headers never enter output/debug.
-validation_js = core_js[:core_js.index('async function readHistorical')]
-prepare = validation_js + '''
-try {
-  const request = validateRequest(msg.payload);
-  const apiKey = env.get('SIFTINGIO_API_KEY');
-  if (!apiKey) throw new Error('Configure the SIFTINGIO_API_KEY environment variable.');
-  const query = ['start','end','interval','limit','cursor'].filter(k=>request[k]!==undefined).map(k=>encodeURIComponent(k)+'='+encodeURIComponent(String(request[k]))).join('&');
-  return {_msgid:msg._msgid,method:'GET',url:'https://api.sifting.io/v1/hist/'+request.asset_class+'/'+request.symbol+'/bars?'+query,headers:{'X-API-Key':apiKey,'Accept':'application/json','Accept-Encoding':'gzip'},followRedirects:false,requestTimeout:15000,siftingio_request:request};
-} catch(e) {node.error(e.message);return null;}
-'''
-normalizer = validation_js + '\n' + core_js[core_js.index('function toCsv'):]+'''
-try {
-  if (msg.statusCode < 200 || msg.statusCode >= 300) {node.error('SiftingIO HTTP '+msg.statusCode+'. Inspect the account and documentation before retrying.');return null;}
-  const page=normalizePage(msg.payload,msg.siftingio_request);
-  return [{payload:page},{payload:toCsv(page),filename:'siftingio-historical-bars.csv'}];
-} catch(e) {node.error(e.message);return null;}
-'''
+# Core HTTP Request disables decompression; our small node uses Node fetch.
 flow=[
  {'id':'siftingio-tab','type':'tab','label':'SiftingIO historical bars','disabled':False,'info':'Manual, read-only page fetch. https://sifting.io/docs . Set SIFTINGIO_API_KEY in the runtime environment; do not paste a key into this flow. Dates below are examples, not market-data observations.'},
  {'id':'siftingio-notes','type':'comment','z':'siftingio-tab','name':'Own key in runtime environment; one page; manual execution only','info':'Edit symbol and UTC dates in Inject. Forex v means reported tick count. has_more and next_cursor describe remaining pages. No key should be wired to Debug.','x':400,'y':60,'wires':[]},
- {'id':'siftingio-inject','type':'inject','z':'siftingio-tab','name':'Choose dates and instrument','props':[{'p':'payload'}],'repeat':'','crontab':'','once':False,'onceDelay':0.1,'topic':'','payload':json.dumps({'asset_class':'forex','symbol':'EURUSD','start':'2026-11-01','end':'2026-11-02','interval':'1h','limit':300}),'payloadType':'json','x':190,'y':140,'wires':[['siftingio-prepare']]},
- {'id':'siftingio-prepare','type':'function','z':'siftingio-tab','name':'Validate and add secret header','func':prepare,'outputs':1,'timeout':0,'noerr':0,'initialize':'','finalize':'','libs':[],'x':470,'y':140,'wires':[['siftingio-http']]},
- {'id':'siftingio-http','type':'http request','z':'siftingio-tab','name':'Read historical page','method':'use','ret':'obj','paytoqs':'ignore','url':'','tls':'','persist':False,'proxy':'','insecureHTTPParser':False,'authType':'','senderr':False,'headers':[],'x':740,'y':140,'wires':[['siftingio-normalize']]},
- {'id':'siftingio-normalize','type':'function','z':'siftingio-tab','name':'Return bars and CSV; discard transport headers','func':normalizer,'outputs':2,'timeout':0,'noerr':0,'initialize':'','finalize':'','libs':[],'x':460,'y':240,'wires':[['siftingio-json'],['siftingio-csv']]},
+ {'id':'siftingio-inject','type':'inject','z':'siftingio-tab','name':'Choose dates and instrument','props':[{'p':'payload'}],'repeat':'','crontab':'','once':False,'onceDelay':0.1,'topic':'','payload':json.dumps({'asset_class':'forex','symbol':'EURUSD','start':'2026-11-01','end':'2026-11-02','interval':'1h','limit':300}),'payloadType':'json','x':190,'y':140,'wires':[['siftingio-native']]},
+ {'id':'siftingio-native','type':'siftingio historical','z':'siftingio-tab','name':'SiftingIO historical page','x':480,'y':140,'wires':[['siftingio-json'],['siftingio-csv']]},
  {'id':'siftingio-json','type':'debug','z':'siftingio-tab','name':'Page and next_cursor','active':True,'tosidebar':True,'console':False,'tostatus':False,'complete':'payload','targetType':'msg','x':800,'y':220,'wires':[]},
- {'id':'siftingio-csv','type':'debug','z':'siftingio-tab','name':'CSV text (not written to disk)','active':True,'tosidebar':True,'console':False,'tostatus':False,'complete':'payload','targetType':'msg','x':810,'y':280,'wires':[]},
- {'id':'siftingio-catch','type':'catch','z':'siftingio-tab','name':'Redact transport failures','scope':['siftingio-http'],'uncaught':False,'x':190,'y':340,'wires':[['siftingio-redact']]},
- {'id':'siftingio-redact','type':'function','z':'siftingio-tab','name':'Generic failure only','func':"return {payload:{error:'Market-data request failed. No automatic retry was made; inspect runtime connectivity and account status.'}};",'outputs':1,'timeout':0,'noerr':0,'initialize':'','finalize':'','libs':[],'x':480,'y':340,'wires':[['siftingio-json']]}
+ {'id':'siftingio-csv','type':'debug','z':'siftingio-tab','name':'CSV text (not written to disk)','active':True,'tosidebar':True,'console':False,'tostatus':False,'complete':'payload','targetType':'msg','x':810,'y':280,'wires':[]}
 ]
-# The native HTTP Request node deliberately disables decompression. Use an own
-# small node backed by Node fetch instead of publishing a broken gzip flow.
-flow=[flow[0],flow[1],flow[2],
- {'id':'siftingio-native','type':'siftingio historical','z':'siftingio-tab','name':'SiftingIO historical page','x':480,'y':140,'wires':[['siftingio-json'],['siftingio-csv']]},flow[6],flow[7]]
-flow[2]['wires']=[['siftingio-native']]
 write('node-red/historical-bars.json',json.dumps(flow,indent=2)+'\n')
 write('node-red/core.mjs',(ROOT/'dist/core.js').read_text())
-write('node-red/package.json',json.dumps({'name':'node-red-contrib-siftingio','version':'0.1.0','description':'Read a bounded page of SiftingIO historical Forex or commodity bars.','main':'siftingio.cjs','license':'MIT','engines':{'node':'>=20'},'keywords':['node-red','forex','commodities','market-data'],'node-red':{'nodes':{'siftingio':'siftingio.cjs'}},'files':['siftingio.cjs','siftingio.html','core.mjs','README.md','LICENSE']},indent=2)+'\n')
+write('node-red/package.json',json.dumps({'name':'node-red-contrib-siftingio','version':'0.1.0','description':'Read a bounded page of SiftingIO historical Forex or commodity bars.','main':'siftingio.cjs','license':'MIT','engines':{'node':'>=20'},'keywords':['node-red','forex','commodities','market-data'],'node-red':{'nodes':{'siftingio':'siftingio.cjs'}},'files':['siftingio.cjs','siftingio.html','core.mjs','historical-bars.json','README.md','LICENSE']},indent=2)+'\n')
 
 ds={'type':'yesoreyeram-infinity-datasource','uid':'${DS_SIFTINGIO}'}
 panels=[]
